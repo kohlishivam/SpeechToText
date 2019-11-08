@@ -1,0 +1,15 @@
+db.sqlite3
+dump.rdb
+SpeechToTextMicroservice/__pycache__/*
+main/migrations/__pycache__/*
+main/__pycache__/*
+*.pyc
+.DS_Store
+templates/.DS_Store
+main/migrations/.DS_Store
+media/*
+Transcripts/*
+*.mp3
+*.txt
+*.wav
+media/*
