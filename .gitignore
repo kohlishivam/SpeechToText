@@ -10,6 +10,5 @@ main/migrations/.DS_Store
 media/*
 Transcripts/*
 *.mp3
-*.txt
 *.wav
 media/*
