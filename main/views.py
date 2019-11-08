@@ -14,6 +14,11 @@ from .tasks import speech_to_text
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+
+def upload_drive(request):
+	return render(request, 'main/upload_drive.html')
+
+
 def upload(request):
 	return render(request, 'main/index.html')
 

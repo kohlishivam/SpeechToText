@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Google Picker Example</title>
+
+    <script type="text/javascript">
+
+      // The Browser API key obtained from the Google API Console.
+      var developerKey = '';
+
+      // The Client ID obtained from the Google API Console. Replace with your own Client ID.
+      var clientId = '';
+
+      // Scope to use to access user's photos.
+      var scope = 'https://www.googleapis.com/auth/drive.file';
+
+      var pickerApiLoaded = false;
+      var oauthToken;
+
+      // Use the API Loader script to load google.picker and gapi.auth.
+      function onApiLoad() {
+        gapi.load('auth2', onAuthApiLoad);
+        gapi.load('picker', onPickerApiLoad);
+      }
+
+      function onAuthApiLoad() {
+        var authBtn = document.getElementById('auth');
+        authBtn.disabled = false;
+        authBtn.addEventListener('click', function() {
+          gapi.auth2.init({ client_id: clientId }).then(function(googleAuth) {
+            googleAuth.signIn({ scope: scope }).then(function(result) {
+              handleAuthResult(result.getAuthResponse());
+            })
+          })
+        });
+      }
+
+      function onPickerApiLoad() {
+        pickerApiLoaded = true;
+        createPicker();
+      }
+
+      function handleAuthResult(authResult) {
+        if (authResult && !authResult.error) {
+          oauthToken = authResult.access_token;
+          createPicker();
+        }
+      }
+     
+
+      // Create and render a Picker object for picking from Google Photos.
+      function createPicker() {
+        if (pickerApiLoaded && oauthToken) {
+          var view = new google.picker.View(google.picker.ViewId.DOCS);
+          view.setMimeTypes("image/png,image/jpeg,image/jpg,audio/mp3");
+          var picker = new google.picker.PickerBuilder().
+              addView(view).
+              setOAuthToken(oauthToken).
+              setDeveloperKey(developerKey).
+              setCallback(pickerCallback).
+              addView(new google.picker.DocsUploadView()).
+              build();
+          picker.setVisible(true);
+        }
+      }
+
+      // A simple callback implementation.
+      function pickerCallback(data) {
+        var url = 'nothing';
+        if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+          var doc = data[google.picker.Response.DOCUMENTS][0];
+          url = doc[google.picker.Document.URL];
+        }
+        var message = 'You picked: ' + url;
+        document.getElementById('result').innerHTML = message;
+      }
+    </script>
+  </head>
+  <body>
+      <div class="container">
+          <div class="col-md-8 col-md-offset-2">
+              <h3>File Input</h3>
+
+          <form method="POST" action="#" enctype="multipart/form-data">
+              <div class="form-group">
+                  <div class="input-group input-file" name="Fichier1">
+                      <input id="result" type="text" class="form-control" placeholder='Choose a file...' />			
+                      <span class="input-group-btn">
+                        <button id="auth" class="btn btn-default" type="button">Drive</button>
+                      </span>
+                  </div>
+              </div>
+              <!-- COMPONENT END -->
+              <div class="form-group">
+                  <button type="submit" class="btn btn-primary pull-right" disabled>Submit</button>
+                  <button type="reset" class="btn btn-danger">Reset</button>
+              </div>
+          </form>
+          </div>
+      </div>
+
+    <div id="result"></div>
+
+    <!-- The Google API Loader script. -->
+    <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+  </body>
+</html>
