@@ -3,7 +3,7 @@ anyjson==0.3.3
 billiard==3.3.0.23
 cachetools==3.1.1
 celery==3.1.18
-certifi==2019.9.11
+certifi==2022.12.7
 chardet==3.0.4
 Django==1.8
 google-api-core==1.14.3
